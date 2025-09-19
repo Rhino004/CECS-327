@@ -35,3 +35,5 @@ try:
         time.sleep(1)
 except KeyboardInterrupt:#when it ends
     print("Server shutting down.")
+#to do this task I want to do this command
+#docker-compose up --build
