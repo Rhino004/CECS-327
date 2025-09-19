@@ -4,7 +4,6 @@ import threading
 
 host = '0.0.0.0'
 TCP_port = 5000
-UDP_port = 5001
 #connects the TCP clients in its own thread
 def handle_tcp(connection,addr):
     print(f"TCP Connected by the address {addr}")
@@ -33,7 +32,7 @@ threading.Thread(target=tcp_server, daemon=True).start()#runs the function in pa
 print("Server is running")
 try:
     while True:#this checks if the server is runningS
-        time.sleep(1)
+        time.sleep(2)
 except KeyboardInterrupt:#when it ends
     print("Server shutting down.")
 #to do this task I want to do this command
