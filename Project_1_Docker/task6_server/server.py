@@ -1,21 +1,25 @@
+#Ryan Tomas 028210102
+#CECS 327
 import time
 import socket
 import threading
 
 host = '0.0.0.0'
 TCP_port = 5000
-UDP_port = 5001
 #connects the TCP clients in its own thread
 def handle_tcp(connection,addr):
     print(f"TCP Connected by the address {addr}")
     with connection: #checks if there is a connection
-        connection.sendall(b"This is the TCP server in the Docker container")
-        while True:
-            data = connection.recv(1024)#1024 is the bytes
-            if not data: #close the connection if there is not 
-                break
-            print(f"TCP Received from  address {addr}: {data.decode()}")
-            connection.sendall(data)#echo message to the client
+        try:
+            connection.sendall(b"This is the TCP server in the Docker container")
+            while True:
+                data = connection.recv(1024)#1024 is the bytes
+                if not data: #close the connection if there is not 
+                    break
+                print(f"TCP Received from  address {addr}: {data.decode()}")
+                connection.sendall(data)#echo message to the client
+        except ConnectionResetError:
+            pass
 
 def tcp_server():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
@@ -33,7 +37,7 @@ threading.Thread(target=tcp_server, daemon=True).start()#runs the function in pa
 print("Server is running")
 try:
     while True:#this checks if the server is runningS
-        time.sleep(1)
+        time.sleep(2)
 except KeyboardInterrupt:#when it ends
     print("Server shutting down.")
 #to do this task I want to do this command
