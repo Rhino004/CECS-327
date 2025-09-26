@@ -30,4 +30,6 @@ services:
     build: .
     command: python client.py
     depends_on:
-      - server
+      - server1
+      - server2
+      - server3
