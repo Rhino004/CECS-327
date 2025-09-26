@@ -2,6 +2,8 @@ version: "3.9"
 services:
   server:
     build: .
+    environment:
+      - server_name=server1
     command: python server.py
     container_name: server1
     ports:
@@ -9,6 +11,8 @@ services:
   
   server2:
     build: .
+    environment:
+      - server_name=server2
     command: python server.py
     container_name: server2
     ports:
@@ -16,6 +20,26 @@ services:
   
   server3:
     build: .
+    environment:
+      - server_name=server3
+    command: python server.py
+    container_name: server3
+    ports:
+    - "5000:5000"
+
+  server4:
+    build: .
+    environment:
+      - server_name=server4
+    command: python server.py
+    container_name: server3
+    ports:
+    - "5000:5000"
+
+  server5:
+    build: .
+    environment:
+      - server_name=server5
     command: python server.py
     container_name: server3
     ports:
