@@ -4,30 +4,29 @@ services:
     build: .
     command: python multicast_reciver.py
     container_name: multicast_reciver1
-    ports:
-    - "5007:5007"
+    environment:
+      -sensor=temp
+    networks:
+      - mnet
   sender2:
     build: .
     command: python multicast_reciver.py
     container_name: multicast_reciver2
-    ports:
-    - "5007:5007"
-
-  sender3:
-    build: .
-    command: python multicast_reciver.py
-    container_name: multicast_reciver3
-    ports:
-    - "5007:5007"
+    environment:
+      -sensor=humidity
+    networks:
+      - mnet
 
   receiver1:
     build: .
     command: python multicast_sender.py
-    depends_on:
-      - sender
+    networks:
+      - mnet
 
   receiver2:
       build: .
       command: python multicast_sender.py
-      depends_on:
-        - sender
+      networks:
+        - mnet
+networks:
+  mnet:
