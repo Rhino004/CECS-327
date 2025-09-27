@@ -5,7 +5,7 @@ services:
     command: python multicast_reciver.py
     container_name: multicast_reciver1
     environment:
-      -sensor=temp
+      -SENSOR_NAME=temp
     networks:
       - mnet
   sender2:
@@ -13,7 +13,7 @@ services:
     command: python multicast_reciver.py
     container_name: multicast_reciver2
     environment:
-      -sensor=humidity
+      -SENSOR_NAME=humidity
     networks:
       - mnet
 
