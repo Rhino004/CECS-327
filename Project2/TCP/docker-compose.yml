@@ -1,13 +1,12 @@
 version: "3.9"
 services:
-  server:
+  server1:
     build: .
     environment:
       - server_name=server1
     command: python server.py
     container_name: server1
-    ports:
-    - "5000:5000"
+
   
   server2:
     build: .
@@ -15,8 +14,6 @@ services:
       - server_name=server2
     command: python server.py
     container_name: server2
-    ports:
-    - "5000:5000"
   
   server3:
     build: .
@@ -24,12 +21,26 @@ services:
       - server_name=server3
     command: python server.py
     container_name: server3
-    ports:
-    - "5000:5000"
+  server4:
+    build: .
+    environment:
+      - server_name=server4
+    command: python server.py
+    container_name: server4
+
+  server5:
+    build: .
+    environment:
+      - server_name=server5
+    command: python server.py
+    container_name: server5
+
   client:
     build: .
-    command: python client.py
+    command: tail -f /dev/null
     depends_on:
       - server1
       - server2
       - server3
+      - server4
+      - server5

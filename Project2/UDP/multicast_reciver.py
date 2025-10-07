@@ -32,25 +32,25 @@ last_time = start
 while time.time() - start < args.duration:
     data, addr = sock.recvfrom(1024)
     now = time.time()
-    print("Time since last message: {:.6f} seconds".format(now - last_time))
+    print("[receiver] Time since last message: {:.6f} seconds".format(now - last_time))
     
     try:
         message = data.decode('utf-8')
 
         try:
             json_data = json.loads(message)
-            print(f"Received JSON data from {addr}: {json_data}")
+            print(f"[receiver] Received JSON data from {addr}: {json_data}")
 
         except json.JSONDecodeError:
-            print(f"Received non-JSON message from {addr}: {message}")
+            print(f"[receiver] Received non-JSON message from {addr}: {message}")
 
     except UnicodeDecodeError:
-        print(f"Received binary data from {addr}: {message}")
+        print(f"[receiver] Received binary data from {addr}: {message}")
 
     last_time = now
-    print("Time taken to receive message: {:.6f} seconds".format(last_time - start))
-    
+    print("[receiver] Time taken to receive message: {:.6f} seconds".format(last_time - start))
+
 # Leave the multicast group
 sock.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, mreq)
 sock.close()
-print('Leaving multicast group and closing socket.')
+print('[receiver] Leaving multicast group and closing socket.')

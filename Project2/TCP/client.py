@@ -11,8 +11,14 @@ print(host)
 
 port = 5000
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
-    server.connect((host, port))
-    data = server.recv(1024)
-
-print(f"Received: ", data.decode())
+try:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
+        print(f'[client] Connecting to {host} on port {port}')
+        server.connect((host, port))
+        data = server.recv(1024)
+    
+except Exception as e:
+    print(f"[client]Connection to {host} failed, retrying...")
+    time.sleep(1)
+print(f"[client]Received: ", data.decode())
+print("[client]Client done")
