@@ -11,7 +11,7 @@ args = parser.parse_args()
 # Multicast group details
 mcast_group = '224.1.1.1'
 mcast_port = 5007
-
+host_ip = socket.gethostbyname(socket.gethostname())
 # Create the UDP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -20,35 +20,28 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 sock.bind(("", mcast_port))
 # Join the multicast group
 
-mreq = struct.pack("4sl", socket.inet_aton(mcast_group), socket.INADDR_ANY)
+mreq = struct.pack("4s4s", socket.inet_aton(mcast_group), socket.inet_aton(host_ip))
 sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
-print("Listening on multicast group {}:{}".format(mcast_group, mcast_port))
+print("[receiver]Listening on multicast group {}:{}".format(mcast_group, mcast_port))
 # Set a timeout so the socket does not block indefinitely
-
+sock.settimeout(0.5)
 start = time.time()
-last_time = start
 
 # Listen for messages
 while time.time() - start < args.duration:
-    data, addr = sock.recvfrom(1024)
-    now = time.time()
-    print("[receiver] Time since last message: {:.6f} seconds".format(now - last_time))
-    
+    try:
+        data, addr = sock.recvfrom(1024)
+    except socket.timeout:
+        continue  # just loop again until duration ends
     try:
         message = data.decode('utf-8')
-
         try:
             json_data = json.loads(message)
-            print(f"[receiver] Received JSON data from {addr}: {json_data}")
-
+            print(f"[receiver] Received JSON from {addr}: {json_data}")
         except json.JSONDecodeError:
-            print(f"[receiver] Received non-JSON message from {addr}: {message}")
-
+            print(f"[receiver] Received text from {addr}: {message}")
     except UnicodeDecodeError:
-        print(f"[receiver] Received binary data from {addr}: {message}")
-
-    last_time = now
-    print("[receiver] Time taken to receive message: {:.6f} seconds".format(last_time - start))
+        print(f"[receiver] Received binary from {addr}: {data}")
 
 # Leave the multicast group
 sock.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, mreq)
