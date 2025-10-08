@@ -1,31 +1,33 @@
 version: "3.9"
 services:
-  sender1:
-    build: .
-    command: python multicast_reciver.py
-    container_name: multicast_reciver1
-    environment:
-      -SENSOR_NAME=temp
-    networks:
-      - mnet
-  sender2:
-    build: .
-    command: python multicast_reciver.py
-    container_name: multicast_reciver2
-    environment:
-      -SENSOR_NAME=humidity
-    networks:
-      - mnet
-
   receiver1:
     build: .
-    command: python multicast_sender.py
+    command: python multicast_reciver.py --duration 15
+    container_name: receiver1
+    networks:
+      - mnet
+  receiver2:
+    build: .
+    command: python multicast_reciver.py --duration 15
+    container_name: receiver2
     networks:
       - mnet
 
-  receiver2:
+  sender1:
+    build: .
+    command: python multicast_sender.py
+    container_name: sender1
+    environment:
+      - SENSOR_NAME=temp
+    networks:
+      - mnet
+
+  sender2:
       build: .
       command: python multicast_sender.py
+      container_name: sender2
+      environment:
+        - SENSOR_NAME=humidity
       networks:
         - mnet
 networks:
