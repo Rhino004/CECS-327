@@ -12,13 +12,13 @@ mcast_port = 5007
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
 ttl = struct.pack('b', 1)  # Set TTL to 1
 sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, ttl)
-
+# Environment variables for sender name and sensor name
 sensor_name = os.getenv('SENSOR_NAME', 'Sensor1')
 sender_name = os.getenv("sender_name", "sender")
 #plain text
-message = f"Hello, this is a multicast message from {sender_name}."
-sock.sendto(message.encode('utf-8'), (mcast_group, mcast_port))
-print(f"[sender] Sent text message: {message}")
+msg = f"Hello, this is a multicast message from {sender_name}."
+sock.sendto(msg.encode('utf-8'), (mcast_group, mcast_port))
+print(f"[sender] Sent text message: {msg}")
 # JSON data
 json_msg = json.dumps({"sensor": sensor_name, "value": round(20 + 5* random.random(), 2)})
 sock.sendto(json_msg.encode('utf-8'), (mcast_group, mcast_port))
@@ -29,10 +29,9 @@ binary_data = os.urandom(16)  # 16 bytes of random binary data
 sock.sendto(binary_data, (mcast_group, mcast_port))
 print(f"[sender] Sent binary data: {binary_data}")
 # Send multiple messages
-
-sock.sendto(message.encode('utf-8'), (mcast_group, mcast_port))
+sock.sendto(msg.encode('utf-8'), (mcast_group, mcast_port))
 sock.sendto(json_msg.encode('utf-8'), (mcast_group, mcast_port))
 sock.sendto(binary_data, (mcast_group, mcast_port))
 
-
+# Close the socket
 sock.close()

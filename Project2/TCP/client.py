@@ -18,7 +18,7 @@ try:
         data = server.recv(1024)
     
 except Exception as e:
-    print(f"[client]Connection to {host} failed, retrying...")
+    print(f"[client] Connection to {host} failed, retrying...")
     time.sleep(1)
-print(f"[client]Received: ", data.decode())
-print("[client]Client done")
+print(f"[client] Received: ", data.decode())
+print("[client] Client done")

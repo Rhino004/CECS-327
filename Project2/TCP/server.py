@@ -19,6 +19,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
             #print a message when a client connects
             print(f"[server] {server_name} accepted connection from {addr}")
             #send a message to the client
-            message = f"Hello from {server_name}!"
-            conn.sendall(message.encode())
-            print("[server] Sent: ", message)
+            msg = f"Hello from {server_name}!"
+            conn.sendall(msg.encode())
+            print("[server] Sent: ", msg)

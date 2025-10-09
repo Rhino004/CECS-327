@@ -19,7 +19,7 @@ services:
 
   receiver1:
     build: .
-    command: sh -c "timeout 15 tcpdump -i eth0 udp port 5007 -n -l & python multicast_receiver.py --duration 15"
+    command: sh -c "timeout 15 tcpdump -i eth0 udp port 5007 & python multicast_receiver.py --duration 15"
     container_name: receiver1
     network_mode: "host"
     depends_on:
@@ -28,9 +28,10 @@ services:
 
   receiver2:
     build: .
-    command: sh -c "timeout 15 tcpdump -i eth0 udp port 5007 -n -l & python multicast_receiver.py --duration 15"
+    command: sh -c "timeout 15 tcpdump -i eth0 udp port 5007 & python multicast_receiver.py --duration 15"
     container_name: receiver2
     network_mode: "host"
     depends_on:
       - sender1
       - sender2
+

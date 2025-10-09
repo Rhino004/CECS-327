@@ -9,6 +9,6 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Default command: run tcpdump for 15s in background, then run receiver for 15s
-CMD sh -c "timeout 15 tcpdump -i eth0 udp port 5007 -n -l & python multicast_receiver.py --duration 15"
+CMD sh -c "timeout 15 tcpdump -i eth0 udp port 5007 & python multicast_receiver.py --duration 15"
 
 

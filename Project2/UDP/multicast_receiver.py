@@ -3,16 +3,18 @@ import struct
 import argparse
 import time
 import json
-import subprocess
-import threading
 # Argument parsing
+#This is needed to set the duration for which the receiver will listen for messages.
 parser = argparse.ArgumentParser(description='Multicast UDP Receiver')
+# Default duration is set to 15 seconds.
 parser.add_argument('--duration', type=int, default=15, help='Duration to listen for messages (in seconds)')
+# Parse the arguments
 args = parser.parse_args()
 
-# Multicast group details
+# Multicast group details that was given
 mcast_group = '224.1.1.1'
 mcast_port = 5007
+# Get the host IP address
 host_ip = socket.gethostbyname(socket.gethostname())
 # Create the UDP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
@@ -24,7 +26,8 @@ sock.bind(("", mcast_port))
 
 mreq = struct.pack("4s4s", socket.inet_aton(mcast_group), socket.inet_aton(host_ip))
 sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
-print("[receiver]Listening on multicast group {}:{}".format(mcast_group, mcast_port))
+print("[receiver] Joined multicast group")
+print("[receiver] Listening on multicast group {}:{}".format(mcast_group, mcast_port))
 # Set a timeout so the socket does not block indefinitely
 sock.settimeout(0.5)
 start = time.time()
@@ -39,15 +42,16 @@ while time.time() - start < args.duration:
         message = data.decode('utf-8')
         try:
             json_data = json.loads(message)
-            json_msg = (f"[receiver] Received JSON data: {json_data}")
+            print(f"[receiver] Received {json_data}")
+            
         except json.JSONDecodeError:
-            norm_msg = (f"[receiver] Received text from {addr}\n Message: {message}")
+            print(f"[receiver] Received message from {addr}: Message: {message}")
+            
     except UnicodeDecodeError:
-        binary_msg = (f"[receiver] Received binary from {addr}: {data}")
+        print(f"[receiver] Received binary from {addr}: {data}")
+        
 
-print(norm_msg)
-print(json_msg)
-print(binary_msg)
+
 # Leave the multicast group
 sock.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, mreq)
 sock.close()
