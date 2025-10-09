@@ -4,7 +4,7 @@ import json
 import os
 import random
 import time
-time.sleep(5)  # Wait for receivers to be ready
+
 mcast_group = '224.1.1.1'
 mcast_port = 5007
 
@@ -17,21 +17,23 @@ sensor_name = os.getenv('SENSOR_NAME', 'Sensor1')
 sender_name = os.getenv("sender_name", "sender")
 #plain text
 msg = f"Hello, this is a multicast message from {sender_name}."
-sock.sendto(msg.encode('utf-8'), (mcast_group, mcast_port))
 print(f"[sender] Sent text message: {msg}")
 # JSON data
 json_msg = json.dumps({"sensor": sensor_name, "value": round(20 + 5* random.random(), 2)})
-sock.sendto(json_msg.encode('utf-8'), (mcast_group, mcast_port))
 print(f"[sender] Sent JSON message: {json_msg}")
-
 # Binary data
 binary_data = os.urandom(16)  # 16 bytes of random binary data
-sock.sendto(binary_data, (mcast_group, mcast_port))
 print(f"[sender] Sent binary data: {binary_data}")
 # Send multiple messages
+#for _ in range(5):
+time.sleep(5)
 sock.sendto(msg.encode('utf-8'), (mcast_group, mcast_port))
+
 sock.sendto(json_msg.encode('utf-8'), (mcast_group, mcast_port))
+
 sock.sendto(binary_data, (mcast_group, mcast_port))
+
 
 # Close the socket
 sock.close()
+print("[sender] Socket closed.")
