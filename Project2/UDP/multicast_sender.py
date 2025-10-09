@@ -14,9 +14,9 @@ ttl = struct.pack('b', 1)  # Set TTL to 1
 sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, ttl)
 
 sensor_name = os.getenv('SENSOR_NAME', 'Sensor1')
-
+sender_name = os.getenv("sender_name", "sender")
 #plain text
-message = "Hello, this is a multicast message."
+message = f"Hello, this is a multicast message from {sender_name}."
 sock.sendto(message.encode('utf-8'), (mcast_group, mcast_port))
 print(f"[sender] Sent text message: {message}")
 # JSON data

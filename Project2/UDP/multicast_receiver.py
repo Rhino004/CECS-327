@@ -3,6 +3,8 @@ import struct
 import argparse
 import time
 import json
+import subprocess
+import threading
 # Argument parsing
 parser = argparse.ArgumentParser(description='Multicast UDP Receiver')
 parser.add_argument('--duration', type=int, default=15, help='Duration to listen for messages (in seconds)')
@@ -37,12 +39,15 @@ while time.time() - start < args.duration:
         message = data.decode('utf-8')
         try:
             json_data = json.loads(message)
-            print(f"[receiver] Received JSON from {addr}: {json_data}")
+            json_msg = (f"[receiver] Received JSON data: {json_data}")
         except json.JSONDecodeError:
-            print(f"[receiver] Received text from {addr}: {message}")
+            norm_msg = (f"[receiver] Received text from {addr}\n Message: {message}")
     except UnicodeDecodeError:
-        print(f"[receiver] Received binary from {addr}: {data}")
+        binary_msg = (f"[receiver] Received binary from {addr}: {data}")
 
+print(norm_msg)
+print(json_msg)
+print(binary_msg)
 # Leave the multicast group
 sock.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, mreq)
 sock.close()

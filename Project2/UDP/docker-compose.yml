@@ -5,6 +5,7 @@ services:
     container_name: sender1
     environment:
       - SENSOR_NAME=temp
+      - sender_name=sender1
     network_mode: "host"
 
   sender2:
@@ -13,11 +14,12 @@ services:
     container_name: sender2
     environment:
       - SENSOR_NAME=humidity
+      - sender_name=sender2
     network_mode: "host"
 
   receiver1:
     build: .
-    command: python multicast_receiver.py --duration 15
+    command: sh -c "timeout 15 tcpdump -i eth0 udp port 5007 -n -l & python multicast_receiver.py --duration 15"
     container_name: receiver1
     network_mode: "host"
     depends_on:
@@ -26,13 +28,9 @@ services:
 
   receiver2:
     build: .
-    command: python multicast_receiver.py --duration 15
+    command: sh -c "timeout 15 tcpdump -i eth0 udp port 5007 -n -l & python multicast_receiver.py --duration 15"
     container_name: receiver2
     network_mode: "host"
     depends_on:
       - sender1
       - sender2
-  monitor:
-    image: nicolaka/netshoot
-    command: tcpdump -i eth0 udp port 5007 -n
-    network_mode: "host"
