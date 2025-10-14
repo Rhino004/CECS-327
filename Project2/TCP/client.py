@@ -22,3 +22,6 @@ except Exception as e:
     time.sleep(1)
 print(f"[client] Received: ", data.decode())
 print("[client] Client done")
+
+#docker exec -it server1 tcpdump -i eth0 udp port 5000 -n
+#docker compose exec client python client.py
