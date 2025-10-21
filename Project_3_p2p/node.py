@@ -17,6 +17,7 @@ def index():
     return jsonify({"message": f"Node {node_id} is running!"})
 
 #route to register a new peer
+#POST is need for flask and is used to send data to the server
 @app.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
@@ -24,6 +25,8 @@ def register():
     if peer:
         peers.add(peer)
         return jsonify({"status": "registered", "peers": list(peers)})
+    #when the peer is missing in the request
+    #400 is the status code for bad request
     return jsonify({"error": "peer missing"}), 400
 
 #route to send a message to all peers
