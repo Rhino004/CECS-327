@@ -1,0 +1,38 @@
+# Project_3_p2p/node.py
+#To use flask we need to install it first using pip
+#need flask to make a flask app, and jsonify to return json responses
+#Also need request to handle incoming requests
+from flask import Flask, jsonify, request
+import uuid
+
+#giving each node a unique id
+app = Flask(__name__)
+node_id = str(uuid.uuid4())
+peers = set()
+
+#route is the endpoint of the flask app
+#this would be used on localhost:5000/
+@app.route('/')
+def index():
+    return jsonify({"message": f"Node {node_id} is running!"})
+
+#route to register a new peer
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.get_json()
+    peer = data.get("peer")
+    if peer:
+        peers.add(peer)
+        return jsonify({"status": "registered", "peers": list(peers)})
+    return jsonify({"error": "peer missing"}), 400
+
+#route to send a message to all peers
+@app.route('/message', methods=['POST'])
+def message():
+    data = request.get_json()
+    sender = data.get("sender")
+    msg = data.get("msg")
+    print(f"Received message from {sender}: {msg}")
+    return jsonify({"status": "received"})
+
+app.run(host='0.0.0.0', port=5000)
