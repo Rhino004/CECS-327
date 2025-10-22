@@ -9,6 +9,9 @@ import uuid
 app = Flask(__name__)
 node_id = str(uuid.uuid4())
 peers = set()
+#the bootstrap node url
+#URL is from the docker network name
+bootstrap_url = "http://localhost:5000"
 
 #route is the endpoint of the flask app
 #this would be used on localhost:5000/
@@ -38,4 +41,7 @@ def message():
     print(f"Received message from {sender}: {msg}")
     return jsonify({"status": "received"})
 
-app.run(host='0.0.0.0', port=5000)
+#need the if statement to run the app only when this file is executed directly
+if __name__ == '__main__':
+    # Run the Flask application
+    app.run(host='0.0.0.0', port=5000)
