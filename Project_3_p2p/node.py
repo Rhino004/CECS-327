@@ -3,8 +3,7 @@
 #need flask to make a flask app, and jsonify to return json responses
 #Also need request to handle incoming requests
 from flask import Flask, jsonify, request
-import uuid
-
+import  threading, time, uuid, requests, socket
 #giving each node a unique id
 app = Flask(__name__)
 node_id = str(uuid.uuid4())
@@ -41,7 +40,34 @@ def message():
     print(f"Received message from {sender}: {msg}")
     return jsonify({"status": "received"})
 
+def register_with_bootstrap():
+    try:
+        res = requests.post(f"{bootstrap_url}/register", json={"peer": f"http://{app.config['HOSTNAME']}:5000"})
+        if res.status_code == 200:
+            data = res.json()
+            peers.update(data.get("peers", []))
+            print(f"Registered with bootstrap. Known peers: {peers}")
+    except Exception as e:
+        print(f"Bootstrap registration failed: {e}")
+
+def discover_peers():
+    while True:
+        for peer in list(peers):
+            try:
+                res = requests.get(f"{peer}/")
+                if res.status_code == 200:
+                    print(f"Contacted peer {peer}")
+            except:
+                peers.discard(peer)
+        time.sleep(10)
+
 #need the if statement to run the app only when this file is executed directly
 if __name__ == '__main__':
+    # Register with the bootstrap node
+    #get the hostname of the machine
+    app.config['HOSTNAME'] = socket.gethostname()
+    #start a thread to register with bootstrap
+    threading.Thread(target=register_with_bootstrap).start()
+    threading.Thread(target=discover_peers, daemon=True).start()
     # Run the Flask application
     app.run(host='0.0.0.0', port=5000)
