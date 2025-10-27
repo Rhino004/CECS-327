@@ -11,7 +11,7 @@ peers = set()
 def register_peer():
     # Get the peer address from the request
     data = request.get_json()
-    peer_address = data.get('address')
+    peer_address = data.get('peer')
     if peer_address:
         peers.add(peer_address)
         # Return a success response

@@ -4,13 +4,15 @@
 #Also need request to handle incoming requests
 from flask import Flask, jsonify, request
 import  threading, time, uuid, requests, socket
+import os
 #giving each node a unique id
 app = Flask(__name__)
 node_id = str(uuid.uuid4())
 peers = set()
 #the bootstrap node url
 #URL is from the docker network name
-bootstrap_url = "http://localhost:5000"
+bootstrap_url = "http://bootstrap:5000"
+node_url = os.environ.get("NODE_URL", f"http://{socket.gethostname()}:5000")
 
 #route is the endpoint of the flask app
 #this would be used on localhost:5000/
@@ -42,7 +44,7 @@ def message():
 
 def register_with_bootstrap():
     try:
-        res = requests.post(f"{bootstrap_url}/register", json={"peer": f"http://{app.config['HOSTNAME']}:5000"})
+        res = requests.post(f"{bootstrap_url}/register", json={"peer": node_url})
         if res.status_code == 200:
             data = res.json()
             peers.update(data.get("peers", []))
