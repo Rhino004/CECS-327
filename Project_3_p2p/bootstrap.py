@@ -1,8 +1,9 @@
 from flask import Flask, jsonify, request
+
 # Initialize the Flask application
 app = Flask(__name__)
+# In-memory storage for registered peers
 peers = set()
-
 #we need the @ symbol for decorators in python
 #Decorator to define a route for registering peers
 #register_peer function to handle peer registration
@@ -31,4 +32,5 @@ def get_peers():
 
 if __name__ == '__main__':
     # Run the Flask application
+    # using the given host and port
     app.run(host='0.0.0.0', port=5000)

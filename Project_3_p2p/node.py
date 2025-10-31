@@ -1,4 +1,3 @@
-# Project_3_p2p/node.py
 #To use flask we need to install it first using pip
 #need flask to make a flask app, and jsonify to return json responses
 #Also need request to handle incoming requests
@@ -38,15 +37,15 @@ def register():
 def message():
     data = request.get_json()
     sender = data.get("sender")
-    msg = data.get("msg")
-    print(f"Received message from {sender}: {msg}")
+    message = data.get("msg")
+    print(f"Received message from {sender}: {message}")
     return jsonify({"status": "received"})
 
 def register_with_bootstrap():
     try:
-        res = requests.post(f"{bootstrap_url}/register", json={"peer": node_url})
-        if res.status_code == 200:
-            data = res.json()
+        response = requests.post(f"{bootstrap_url}/register", json={"peer": node_url})
+        if response.status_code == 200:
+            data = response.json()
             peers.update(data.get("peers", []))
             print(f"Registered with bootstrap. Known peers: {peers}")
     except Exception as e:
@@ -56,8 +55,8 @@ def discover_peers():
     while True:
         for peer in list(peers):
             try:
-                res = requests.get(f"{peer}/")
-                if res.status_code == 200:
+                response = requests.get(f"{peer}/")
+                if response.status_code == 200:
                     print(f"Contacted peer {peer}")
             except:
                 peers.discard(peer)
@@ -72,4 +71,5 @@ if __name__ == '__main__':
     threading.Thread(target=register_with_bootstrap).start()
     threading.Thread(target=discover_peers, daemon=True).start()
     # Run the Flask application
+    #run it on the given host and port
     app.run(host='0.0.0.0', port=5000)
