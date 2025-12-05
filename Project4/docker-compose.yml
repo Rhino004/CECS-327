@@ -1,0 +1,41 @@
+version: "3.9"
+services:
+  node1:
+    build: .
+    container_name: node1
+    environment:
+      - MY_URL=http://node1:5000
+      - PEERS=http://node1:5000,http://node2:5000,http://node3:5000
+    volumes:
+      - ./storage/node1:/app/storage
+    ports:
+      - "5001:5000"
+    networks: [p2pnet]
+
+  node2:
+    build: .
+    container_name: node2
+    environment:
+      - MY_URL=http://node2:5000
+      - PEERS=http://node1:5000,http://node2:5000,http://node3:5000
+    volumes:
+      - ./storage/node2:/app/storage
+    ports:
+      - "5002:5000"
+    networks: [p2pnet]
+
+  node3:
+    build: .
+    container_name: node3
+    environment:
+      - MY_URL=http://node3:5000
+      - PEERS=http://node1:5000,http://node2:5000,http://node3:5000
+    volumes:
+      - ./storage/node3:/app/storage
+    ports:
+      - "5003:5000"
+    networks: [p2pnet]
+
+networks:
+  p2pnet:
+    driver: bridge
